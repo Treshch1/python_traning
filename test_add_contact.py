@@ -22,7 +22,7 @@ class TestAddContact(unittest.TestCase):
         self.create_contact(wd, Contact(first_name="first name", middle_name="middle name", last_name="last name",
                        nickname="nickname", title="title", company="company", address="address", home="home",
                        mobile="mobile", work="work", fax="fax", email="email", email_2="email2", email_3="email3",
-                       homepage="homepage", bday='3', march="March", byear="1997", aday='3', april="April", ayear="2016",
+                       homepage="homepage", bday='3', bmonth="March", byear="1997", aday='3', amonth="April", ayear="2016",
                        secondary_address="secondary address", secondary_home="secondary home", notes="notes"))
         self.go_back_to_home_page(wd)
         self.logout(wd)
@@ -53,12 +53,12 @@ class TestAddContact(unittest.TestCase):
         wd.find_element_by_name("bday").click()
         wd.find_element_by_xpath(f"//option[@value='{contact.bday}']").click()
         wd.find_element_by_name("bmonth").click()
-        wd.find_element_by_xpath(f"//option[@value='{contact.march}']").click()
+        wd.find_element_by_xpath(f"//option[@value='{contact.bmonth}']").click()
         wd.find_element_by_name("byear").send_keys(contact.byear)
         wd.find_element_by_name("aday").click()
         wd.find_element_by_xpath(f"(//option[@value='{contact.aday}'])[2]").click()
         wd.find_element_by_name("amonth").click()
-        wd.find_element_by_xpath(f"(//option[@value='{contact.april}'])[2]").click()
+        wd.find_element_by_xpath(f"(//option[@value='{contact.amonth}'])[2]").click()
         wd.find_element_by_name("ayear").send_keys(contact.ayear)
         wd.find_element_by_name("new_group").click()
         wd.find_element_by_xpath("(//option[@value='3'])[3]").click()
