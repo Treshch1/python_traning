@@ -1,3 +1,7 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 class SessionHelper:
 
     def __init__(self, app):
@@ -13,7 +17,9 @@ class SessionHelper:
     def logout(self):
         wd = self.app.wd
         wd.find_element_by_link_text("Logout").click()
-        wd.find_element_by_name("user")
+        WebDriverWait(wd, 3).until(
+            EC.presence_of_element_located((By.NAME, "user"))
+        )
 
     def ensure_logout(self):
         if self.is_logged_in():
@@ -25,6 +31,9 @@ class SessionHelper:
 
     def is_logged_in_as(self, username):
         wd = self.app.wd
+        WebDriverWait(wd, 3).until(
+            EC.presence_of_element_located((By.XPATH, "//div/div[1]/form/b"))
+        )
         return wd.find_element_by_xpath('//div/div[1]/form/b').text == '('+username+')'
 
     def ensure_login(self, username, password):
