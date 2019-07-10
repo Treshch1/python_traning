@@ -1,4 +1,5 @@
 from model.contact import Contact
+import re
 
 
 class ContactHelper:
@@ -28,6 +29,7 @@ class ContactHelper:
 
     def open_edit_contact_page_by_index(self, index):
         wd = self.app.wd
+        self.go_to_home_page()
         wd.find_elements_by_xpath("//img[@title='Edit']")[index].click()
 
     def delete_first_contact(self):
@@ -46,7 +48,7 @@ class ContactHelper:
         wd.find_elements_by_name("selected[]")[index].click()
 
     def edit_first_contact(self, contact):
-        self.edit_contact_by_index(0)
+        self.edit_contact_by_index(contact, 0)
 
     def edit_contact_by_index(self, contact, index):
         wd = self.app.wd
@@ -114,5 +116,39 @@ class ContactHelper:
                 id = element.find_element_by_name("selected[]").get_attribute("id")
                 last_name = element.find_elements_by_xpath("//td")[1].text
                 first_name = element.find_elements_by_xpath("//td")[2].text
-                self.contact_cache.append(Contact(id=id, first_name=first_name, last_name=last_name))
+                all_phones= element.find_elements_by_xpath("//td")[5].text
+                self.contact_cache.append(Contact(id=id, first_name=first_name, last_name=last_name,
+                                                  all_phones_from_home_page=all_phones))
         return self.contact_cache
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_edit_contact_page_by_index(index)
+        firstname = wd.find_element_by_name("firstname").get_attribute("value")
+        lastname = wd.find_element_by_name("lastname").get_attribute("value")
+        id = wd.find_element_by_name("id").get_attribute("value")
+        homephone = wd.find_element_by_name("home").get_attribute("value")
+        workphone = wd.find_element_by_name("work").get_attribute("value")
+        mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
+        secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
+        return Contact(first_name=firstname, last_name=lastname, id=id,
+                       home=homephone, work=workphone,
+                       mobile=mobilephone, secondary_home=secondaryphone)
+
+    def open_edit_contact_view_by_index(self, index):
+        wd = self.app.wd
+        self.go_to_home_page()
+        details = wd.find_element_by_xpath("//tr[@name='entry']//td[7]//img")
+        details.click()
+
+
+    def get_contact_from_view_page(self, index):
+        wd = self.app.wd
+        self.open_edit_contact_view_by_index(index)
+        text = wd.find_element_by_id("content").text
+        home = re.search("H: (.*)", text).group(1)
+        work = re.search("W: (.*)", text).group(1)
+        mobile = re.search("M: (.*)", text).group(1)
+        secondary_home = re.search("P: (.*)", text).group(1)
+        return Contact(home=home, work=work,
+                       mobile=mobile, secondary_home=secondary_home)

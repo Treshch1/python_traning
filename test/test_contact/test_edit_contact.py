@@ -12,7 +12,7 @@ def test_edit_first_contact(app):
                       home="home", mobile="mobile", work="work", fax="fax", email="email",
                       email_2="email2", email_3="email3", homepage="homepage", bday='3',
                       bmonth="March", byear="1997", aday='3', amonth="April", ayear="2016",
-                      secondary_address="secondary address", secondary_home="secondary home",
+                      secondary_address="secondary address", secondary_home="secondary_home",
                       notes="notes")
     contact.id = old_contacts[index].id
     app.contact.edit_contact_by_index(contact, index)
