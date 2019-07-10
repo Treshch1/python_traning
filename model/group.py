@@ -10,10 +10,10 @@ class Group:
         self.id = id
 
     def __repr__(self):
-        return f"{self.id}, {self.name}"
+        return f"{self.id}, {self.name}, {self.header}, {self.footer}"
 
     def __eq__(self, other):
-        return (self.id is None or other.id is None or self.id == other.id) and self.name == other.name
+        return (self.id is None or other.id is None or self.id == other.id) and self.name.strip() == other.name
 
     def id_or_max(self):
         if self.id:
