@@ -114,9 +114,9 @@ class ContactHelper:
             self.contact_cache = []
             for element in wd.find_elements_by_name("entry"):
                 id = element.find_element_by_name("selected[]").get_attribute("id")
-                last_name = element.find_elements_by_xpath("//td")[1].text
-                first_name = element.find_elements_by_xpath("//td")[2].text
-                all_phones= element.find_elements_by_xpath("//td")[5].text
+                last_name = element.find_elements_by_xpath(".//td")[1].text
+                first_name = element.find_elements_by_xpath(".//td")[2].text
+                all_phones= element.find_elements_by_xpath(".//td")[5].text
                 self.contact_cache.append(Contact(id=id, first_name=first_name, last_name=last_name,
                                                   all_phones_from_home_page=all_phones))
         return self.contact_cache
@@ -135,16 +135,15 @@ class ContactHelper:
                        home=homephone, work=workphone,
                        mobile=mobilephone, secondary_home=secondaryphone)
 
-    def open_edit_contact_view_by_index(self, index):
+    def open_contact_view_by_index(self, index):
         wd = self.app.wd
         self.go_to_home_page()
-        details = wd.find_element_by_xpath("//tr[@name='entry']//td[7]//img")
+        details = wd.find_elements_by_xpath("//tr[@name='entry']//td[7]//img")[index]
         details.click()
-
 
     def get_contact_from_view_page(self, index):
         wd = self.app.wd
-        self.open_edit_contact_view_by_index(index)
+        self.open_contact_view_by_index(index)
         text = wd.find_element_by_id("content").text
         home = re.search("H: (.*)", text).group(1)
         work = re.search("W: (.*)", text).group(1)
