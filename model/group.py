@@ -13,10 +13,13 @@ class Group:
         return f"{self.id}, {self.name}, {self.header}, {self.footer}"
 
     def __eq__(self, other):
-        return (self.id is None or other.id is None or self.id == other.id) and self.name.strip() == other.name
+        return (self.id is None or other.id is None or self.id == other.id) and self.name.strip() == other.name.strip()
 
     def id_or_max(self):
         if self.id:
             return int(self.id)
         else:
             return maxsize
+
+    def clone(self):
+        return Group(**{k: getattr(self, k) for k in ("name", "header")})

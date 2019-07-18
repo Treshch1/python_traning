@@ -17,8 +17,8 @@ test_data = [
 
 
 @pytest.mark.parametrize("group", test_data, ids=[repr(x) for x in test_data])
-def test_edit_name(app, group):
-    if app.group.count() == 0:
+def test_edit_name(app, db, group):
+    if len(db.get_group_list()) == 0:
         app.group.create(Group(name='new group name'))
     old_groups = app.group.get_group_list()
     index = randrange(len(old_groups))

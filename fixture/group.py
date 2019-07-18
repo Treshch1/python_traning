@@ -1,5 +1,6 @@
 from model.group import Group
 
+
 class GroupHelper:
 
     def __init__(self, app):
@@ -50,7 +51,7 @@ class GroupHelper:
             wd.find_element_by_name(field_name).send_keys(text)
 
     def edit_first_group(self, new_data):
-        self.edit_group_by_index(new_data)
+        self.edit_group_by_index(new_data, 0)
 
     def edit_group_by_index(self, new_data, index):
         wd = self.app.wd
@@ -79,3 +80,15 @@ class GroupHelper:
                 id = element.find_element_by_name('selected[]').get_attribute("value")
                 self.group_cache.append(Group(name=text, id=id))
         return list(self.group_cache)
+
+    def delete_group_by_id(self, id):
+        wd = self.app.wd
+        self.open_groups_page()
+        self.select_group_by_id(id)
+        wd.find_element_by_name("delete").click()
+        self.return_to_groups_page()
+        self.group_cache = None
+
+    def select_group_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector(f"input[value='{id}']").click()
