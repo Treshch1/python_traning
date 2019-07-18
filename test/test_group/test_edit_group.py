@@ -20,11 +20,12 @@ test_data = [
 def test_edit_name(app, db, group):
     if len(db.get_group_list()) == 0:
         app.group.create(Group(name='new group name'))
-    old_groups = app.group.get_group_list()
-    index = randrange(len(old_groups))
-    group.id = old_groups[index].id
-    app.group.edit_group_by_index(group, index)
-    new_groups = app.group.get_group_list()
+    old_groups = db.get_group_list()
+    editable_group = random.choice(old_groups)
+    group.id = editable_group.id
+    app.group.edit_group_by_id(group, group.id)
+    new_groups = db.get_group_list()
     assert len(old_groups) == len(new_groups)
-    old_groups[index] = group
+    old_groups.remove(editable_group)
+    old_groups.append(group)
     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
