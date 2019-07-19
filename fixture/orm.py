@@ -2,6 +2,7 @@ from pony.orm import *
 from datetime import datetime
 from model.group import Group
 from model.contact import Contact
+import random
 
 
 class ORMFixture:
@@ -59,3 +60,39 @@ class ORMFixture:
         orm_group = list(select(g for g in ORMFixture.ORMGroup if g.id == group.id))[0]
         return self.convert_contacts_to_model(
             select(c for c in ORMFixture.ORMContact if c.deprecated is None and orm_group not in c.groups))
+
+    @db_session
+    def get_contact_by_id(self, id):
+        return self.convert_contacts_to_model(select(c for c in ORMFixture.ORMContact if c.id == id))[0]
+
+    def get_available_contact_and_group(self):
+        groups = self.get_group_list()
+        contacts = self.get_contact_list()
+        available_itmes = {}
+        for group in groups:
+            if len(self.get_contacts_in_group(group)) < len(contacts):
+                contacts_ids = [i.id for i in contacts]
+                contacts_in_group_ids = [i.id for i in self.get_contacts_in_group(group)]
+                available_group = group
+                available_contact_id = list(set(contacts_ids).difference(contacts_in_group_ids))[0]
+                available_contact = self.get_contact_by_id(available_contact_id)
+                available_itmes = {"group": available_group, "contact": available_contact}
+                return available_itmes
+        return available_itmes
+
+    def get_available_contact_and_group_del(self):
+        groups = self.get_group_list()
+        available_itmes = {}
+        for group in groups:
+            if len(self.get_contacts_in_group(group)):
+                available_contact = random.choice(self.get_contacts_in_group(group))
+                available_group = group
+                available_itmes = {"group": available_group, "contact": available_contact}
+                return available_itmes
+        return available_itmes
+
+    def is_contact_in_group(self, contact, group):
+        contact_ids_in_group = [i.id for i in self.get_contacts_in_group(group)]
+        if contact.id in contact_ids_in_group:
+            return True
+        return False

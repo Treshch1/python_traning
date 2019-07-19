@@ -183,3 +183,40 @@ class ContactHelper:
         secondary_home = re.search("P: (.*)", text).group(1)
         return Contact(home=home, work=work,
                        mobile=mobile, secondary_home=secondary_home)
+
+    def add_group_to_contact(self, contact, group):
+        self.go_to_home_page()
+        self.select_contact_by_id(contact.id)
+        self.choose_group_to_add(group.id)
+        self.click_add()
+
+    def del_group_from_contact(self, contact, group):
+        self.go_to_home_page()
+        self.choose_filter_by_group(group.id)
+        self.select_contact_by_id(contact.id)
+        self.click_delete_from_group()
+        self.go_to_home_page()
+        self.choose_default_filter()
+
+    def choose_group_to_add(self, id):
+        wd = self.app.wd
+        wd.find_element_by_name("to_group").click()
+        wd.find_elements_by_xpath(f"//option[@value='{id}']")[1].click()
+
+    def choose_filter_by_group(self, id):
+        wd = self.app.wd
+        wd.find_element_by_name("group").click()
+        wd.find_elements_by_xpath(f"//option[@value='{id}']")[0].click()
+
+    def choose_default_filter(self):
+        wd = self.app.wd
+        wd.find_element_by_name("group").click()
+        wd.find_element_by_xpath("//*[.='[all]']").click()
+
+    def click_add(self):
+        wd = self.app.wd
+        wd.find_element_by_name("add").click()
+
+    def click_delete_from_group(self):
+        wd = self.app.wd
+        wd.find_element_by_name("remove").click()
