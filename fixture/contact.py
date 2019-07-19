@@ -147,6 +147,12 @@ class ContactHelper:
                                                   all_phones_from_home_page=all_phones))
         return self.contact_cache
 
+    def get_contact_by_id(self, id):
+        wd = self.app.wd
+        self.go_to_home_page()
+        all_phones = wd.find_elements_by_xpath(f"//*[@id='{id}']/../..//td")[5].text
+        return Contact(id=id, all_phones_from_home_page=all_phones)
+
     def get_contact_info_from_edit_page(self, index):
         wd = self.app.wd
         self.open_edit_contact_page_by_index(index)

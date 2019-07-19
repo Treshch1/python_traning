@@ -37,3 +37,16 @@ class DbFixture:
 
     def destroy(self):
         self.connection.close()
+
+    def get_contact_list_phones(self):
+        contact_list_phones = []
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute("select id, home, mobile, work, phone2 from "
+                           + "addressbook where deprecated='0000-00-00 00:00:00'")
+            for row in cursor:
+                id, home, mobile, work, phone2 = row
+                contact_list_phones.append(Contact(id=str(id), home=home, mobile=mobile, work=work, secondary_home=phone2))
+        finally:
+            cursor.close()
+        return contact_list_phones
